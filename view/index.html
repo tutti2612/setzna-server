@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>LINE</title>
+    <link rel="stylesheet" href="/static/css/common.css">
+  </head>
+
+  <body>
+
+    <div class="line">
+      <div id="room" class="line-header">Setzna</div>
+      <div id="chat" class="line-container"></div>
+      <div class="line-form">
+        <input placeholder="user name" id="user" type="text">
+        <button id="join" class="line-form-button">Join</button>
+      </div>
+    </div>
+
+    <script>
+      const join = document.getElementById("join");
+      const user = document.getElementById("user");
+
+      join.onclick = function () {
+        if (user.value != "") {
+					localStorage.setItem("user",user.value)
+          window.location = "/room";
+        }
+      };
+
+    </script>
+  </body>
+</html>
