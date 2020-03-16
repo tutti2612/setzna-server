@@ -1,4 +1,4 @@
-let url = "ws://" + window.location.host + window.location.pathname + "/ws";
+let url = "ws://" + window.location.host + window.location.pathname + "/ws?latitude=66.12312&longitude=123.34234";
 let ws = new WebSocket(url);
 let name = localStorage.getItem("user")
 let chat = document.getElementById("chat");
@@ -43,7 +43,7 @@ text.onkeydown = function (e) {
 function send_data(){
     if (text.value == "")return;
     text.value = escape_html(text.value);
-    let sendData = `{"name":"${name}","message":"${text.value}"}`;
+    let sendData = `{"name":"${name}","message":"${text.value}","latitude":"65.123123","longitude":"123.123123"}`;
     ws.send(sendData);
     text.value = "";
 }

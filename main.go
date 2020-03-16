@@ -1,11 +1,20 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	melody "gopkg.in/olahol/melody.v1"
 )
+
+type post struct {
+	PostType  string `json:"type"`
+	Name      string `json:"name"`
+	Content   string `json:"content"`
+	Latitude  string `json:"latitude"`
+	Longitude string `json:"longitude"`
+}
 
 // 2点間の距離を計算して半径50m以内だったらtrue
 func isClose(lat1, lng1, lat2, lng2 interface{}) bool {
@@ -44,19 +53,26 @@ func main() {
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		// TODO: メッセージの度に位置情報を更新する
+		var p post
+		json.Unmarshal(msg, &p)
+		if p.PostType == "location" {
+			// 緯度、経度をセットする
+			s.Set("latitude", p.Latitude)
+			s.Set("longitude", p.Longitude)
+		}
+		if p.PostType == "message" {
+			m.BroadcastFilter(msg, func(q *melody.Session) bool {
+				lat1, isExistLat1 := s.Get("latitude")
+				lng1, isExistLng1 := s.Get("longitude")
+				lat2, isExistLat2 := q.Get("latitude")
+				lng2, isExistLng2 := q.Get("longitude")
+				if !isExistLat1 || !isExistLng1 || !isExistLat2 || !isExistLng2 {
+					return false
+				}
 
-		m.BroadcastFilter(msg, func(q *melody.Session) bool {
-			lat1, isExistLat1 := s.Get("latitude")
-			lng1, isExistLng1 := s.Get("longitude")
-			lat2, isExistLat2 := q.Get("latitude")
-			lng2, isExistLng2 := q.Get("longitude")
-			if !isExistLat1 || !isExistLng1 || !isExistLat2 || !isExistLng2 {
-				return false
-			}
-
-			return isClose(lat1, lng1, lat2, lng2)
-		})
+				return isClose(lat1, lng1, lat2, lng2)
+			})
+		}
 	})
 	r.Run(":8080")
 }
