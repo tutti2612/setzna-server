@@ -28,6 +28,23 @@ func isClose(lat1, lng1, lat2, lng2 float64) bool {
 	return distance < setznaDistance
 }
 
+func isSessionClose(s *melody.Session, q *melody.Session) bool {
+	lat1, isExistLat1 := s.Get("latitude")
+	lng1, isExistLng1 := s.Get("longitude")
+	lat2, isExistLat2 := q.Get("latitude")
+	lng2, isExistLng2 := q.Get("longitude")
+	if !isExistLat1 || !isExistLng1 || !isExistLat2 || !isExistLng2 {
+		return false
+	}
+
+	lat1F64, _ := strconv.ParseFloat(lat1.(string), 64)
+	lng1F64, _ := strconv.ParseFloat(lng1.(string), 64)
+	lat2F64, _ := strconv.ParseFloat(lat2.(string), 64)
+	lng2F64, _ := strconv.ParseFloat(lng2.(string), 64)
+
+	return isClose(lat1F64, lng1F64, lat2F64, lng2F64)
+}
+
 func main() {
 	r := gin.Default()
 	m := melody.New()
@@ -65,20 +82,7 @@ func main() {
 		}
 		if p.PostType == "message" {
 			m.BroadcastFilter(msg, func(q *melody.Session) bool {
-				lat1, isExistLat1 := s.Get("latitude")
-				lng1, isExistLng1 := s.Get("longitude")
-				lat2, isExistLat2 := q.Get("latitude")
-				lng2, isExistLng2 := q.Get("longitude")
-				if !isExistLat1 || !isExistLng1 || !isExistLat2 || !isExistLng2 {
-					return false
-				}
-
-				lat1F64, _ := strconv.ParseFloat(lat1.(string), 64)
-				lng1F64, _ := strconv.ParseFloat(lng1.(string), 64)
-				lat2F64, _ := strconv.ParseFloat(lat2.(string), 64)
-				lng2F64, _ := strconv.ParseFloat(lng2.(string), 64)
-
-				return isClose(lat1F64, lng1F64, lat2F64, lng2F64)
+				return isSessionClose(s, q)
 			})
 		}
 	})
