@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"math"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	melody "gopkg.in/olahol/melody.v1"
@@ -17,16 +19,13 @@ type post struct {
 }
 
 // 2点間の距離を計算して半径50m以内だったらtrue
-func isClose(lat1, lng1, lat2, lng2 interface{}) bool {
-	const setznaDistance float64 = 50
-	// TODO: 三平方の定理などで２点間の距離を出す
+func isClose(lat1, lng1, lat2, lng2 float64) bool {
+	const setznaDistance float64 = 0.05 // 0.05km = 50m
 	// 緯度1度あたり110.9463km、経度1度あたり90.4219km
 	// https://s-giken.info/distance/distance.php
-
 	// HACK: 地球の丸みを考慮すると、三平方の定理では不十分なので改善する。
-	// distance := math.Sqrt(math.Pow((lat1-lat2)*110.9463, 2) + math.Pow((lng1-lng2)*90.4219, 2))
-	// return distance < setznaDistance
-	return true
+	distance := math.Sqrt(math.Pow((lat1-lat2)*110.9463, 2) + math.Pow((lng1-lng2)*90.4219, 2))
+	return distance < setznaDistance
 }
 
 func main() {
@@ -48,8 +47,12 @@ func main() {
 	})
 
 	r.GET("/room/ws", func(c *gin.Context) {
-		// TODO: コネクション接続時に初期位置情報をセットする
-		m.HandleRequest(c.Writer, c.Request)
+		// コネクション接続時に初期位置情報をセットする
+		m.HandleRequestWithKeys(
+			c.Writer,
+			c.Request,
+			map[string]interface{}{"latitude": c.Query("latitude"), "longitude": c.Query("longitude")},
+		)
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
@@ -70,7 +73,12 @@ func main() {
 					return false
 				}
 
-				return isClose(lat1, lng1, lat2, lng2)
+				lat1F64, _ := strconv.ParseFloat(lat1.(string), 64)
+				lng1F64, _ := strconv.ParseFloat(lng1.(string), 64)
+				lat2F64, _ := strconv.ParseFloat(lat2.(string), 64)
+				lng2F64, _ := strconv.ParseFloat(lng2.(string), 64)
+
+				return isClose(lat1F64, lng1F64, lat2F64, lng2F64)
 			})
 		}
 	})

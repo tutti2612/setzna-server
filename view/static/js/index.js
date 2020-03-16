@@ -43,7 +43,7 @@ text.onkeydown = function (e) {
 function send_data(){
     if (text.value == "")return;
     text.value = escape_html(text.value);
-    let sendData = `{"name":"${name}","message":"${text.value}","latitude":"65.123123","longitude":"123.123123"}`;
+    let sendData = `{"name":"${name}","message":"${text.value}","latitude":"65.123123","longitude":"123.123123","type":"message"}`;
     ws.send(sendData);
     text.value = "";
 }
