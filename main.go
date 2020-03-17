@@ -28,7 +28,7 @@ func isNear(lat1, lng1, lat2, lng2 float64) bool {
 	return distance < setznaDistance
 }
 
-func isSessionNear(s *melody.Session, q *melody.Session) bool {
+func isSessionNear(s, q *melody.Session) bool {
 	lat1, isExistLat1 := s.Get("latitude")
 	lng1, isExistLng1 := s.Get("longitude")
 	lat2, isExistLat2 := q.Get("latitude")
