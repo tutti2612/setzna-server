@@ -19,7 +19,7 @@ type post struct {
 }
 
 // 2点間の距離を計算して半径50m以内だったらtrue
-func isClose(lat1, lng1, lat2, lng2 float64) bool {
+func isNear(lat1, lng1, lat2, lng2 float64) bool {
 	const setznaDistance float64 = 0.05 // 0.05km = 50m
 	// 緯度1度あたり110.9463km、経度1度あたり90.4219km
 	// https://s-giken.info/distance/distance.php
@@ -28,7 +28,7 @@ func isClose(lat1, lng1, lat2, lng2 float64) bool {
 	return distance < setznaDistance
 }
 
-func isSessionClose(s *melody.Session, q *melody.Session) bool {
+func isSessionNear(s *melody.Session, q *melody.Session) bool {
 	lat1, isExistLat1 := s.Get("latitude")
 	lng1, isExistLng1 := s.Get("longitude")
 	lat2, isExistLat2 := q.Get("latitude")
@@ -42,7 +42,7 @@ func isSessionClose(s *melody.Session, q *melody.Session) bool {
 	lat2F64, _ := strconv.ParseFloat(lat2.(string), 64)
 	lng2F64, _ := strconv.ParseFloat(lng2.(string), 64)
 
-	return isClose(lat1F64, lng1F64, lat2F64, lng2F64)
+	return isNear(lat1F64, lng1F64, lat2F64, lng2F64)
 }
 
 func main() {
@@ -82,7 +82,7 @@ func main() {
 		}
 		if p.PostType == "message" {
 			m.BroadcastFilter(msg, func(q *melody.Session) bool {
-				return isSessionClose(s, q)
+				return isSessionNear(s, q)
 			})
 		}
 	})
