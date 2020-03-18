@@ -13,3 +13,7 @@ $ go run main.go
 ## テスト環境
 
 https://setzna.herokuapp.com/
+
+## ローカル開発環境
+
+ローカルで動かすときはWebsocketプロトコルをwssからwsに変更してください。
