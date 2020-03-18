@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -46,6 +47,11 @@ func isSessionNear(s, q *melody.Session) bool {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	r := gin.Default()
 	m := melody.New()
 
@@ -86,5 +92,5 @@ func main() {
 			})
 		}
 	})
-	r.Run(":8080")
+	r.Run(":" + port)
 }
