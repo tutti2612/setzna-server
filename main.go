@@ -72,6 +72,8 @@ func main() {
 		)
 	})
 
+	// ここらへんでフロント側から受け取った名前、メッセージなどなどを保存する。
+
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
 		var p post
 		json.Unmarshal(msg, &p)
