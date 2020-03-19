@@ -14,7 +14,7 @@ import (
 type post struct {
 	PostType  string `json:"type"`
 	Name      string `json:"name"`
-	Content   string `json:"content"`
+	Message   string `json:"message"`
 	Latitude  string `json:"latitude"`
 	Longitude string `json:"longitude"`
 }
