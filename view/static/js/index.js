@@ -1,4 +1,5 @@
-let url = "ws://" + window.location.host + window.location.pathname + "/ws?latitude=66.12312&longitude=123.34234";
+// ローカルで動かすときはWebsocketプロトコルをwssからwsに変更してください。
+let url = "wss://" + window.location.host + window.location.pathname + "/ws?latitude=66.12312&longitude=123.34234";
 let ws = new WebSocket(url);
 let name = localStorage.getItem("user")
 let chat = document.getElementById("chat");

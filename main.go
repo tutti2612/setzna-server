@@ -7,6 +7,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,7 @@ import (
 type post struct {
 	PostType  string `json:"type"`
 	Name      string `json:"name"`
-	Content   string `json:"content"`
+	Message   string `json:"message"`
 	Latitude  string `json:"latitude"`
 	Longitude string `json:"longitude"`
 }
@@ -50,6 +51,11 @@ func isSessionNear(s, q *melody.Session) bool {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	r := gin.Default()
 	m := melody.New()
 
@@ -93,7 +99,7 @@ func main() {
 			go saveDB(p)
 		}
 	})
-	r.Run(":8080")
+	r.Run(":" + port)
 }
 
 func saveDB(p post) bool {
