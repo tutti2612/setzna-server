@@ -10,10 +10,10 @@ services:
             - .:/go/src/setzna
         command: go run main.go
     mysql:
-        image: mysql:5.7.22
+        image: mysql:latest
         environment:
-            MYSQL_ROOT_PASSWORD: golang
-            MYSQL_USER: golang 
-            MYSQL_PASSWORD: golang
-            MYSQL_DATABASE: golang
+            MYSQL_ROOT_PASSWORD: setzna
+            MYSQL_USER: setzna 
+            MYSQL_PASSWORD: setzna
+            MYSQL_DATABASE: setzna
         container_name: setzna_mysql

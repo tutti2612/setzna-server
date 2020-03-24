@@ -1,12 +1,16 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
+	"fmt"
+	"log"
 	"math"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	melody "gopkg.in/olahol/melody.v1"
 )
 
@@ -72,8 +76,6 @@ func main() {
 		)
 	})
 
-	// ここらへんでフロント側から受け取った名前、メッセージなどなどを保存する。
-
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
 		var p post
 		json.Unmarshal(msg, &p)
@@ -86,7 +88,49 @@ func main() {
 			m.BroadcastFilter(msg, func(q *melody.Session) bool {
 				return isSessionNear(s, q)
 			})
+
+			// ここらへんでフロント側から受け取った名前、メッセージなどなどを保存する。
+			go saveDB(p)
 		}
 	})
 	r.Run(":8080")
 }
+
+func saveDB(p post) bool {
+	const (
+		DRIVER_NAME = "mysql"
+		// user:password@tcp(container-name:port)/dbname ※mysql はデフォルトで用意されているDB
+		DATA_SOURCE_NAME = "setzna:setzna@tcp(setzna_mysql:3306)/mysql"
+	)
+
+	// DB の接続情報
+	var db *sql.DB
+	var err error
+
+	db, err = sql.Open(DRIVER_NAME, DATA_SOURCE_NAME)
+	if err != nil {
+		log.Fatal("error connecting to database: ", err)
+	}
+
+	// データ保存処理
+	stmtIns, err := db.Prepare(fmt.Sprintf("INSERT INTO messages (message, latitude, longitude) VALUES (?, ?, ?)"))
+	if err != nil {
+		panic(err.Error())
+	}
+	_, err = stmtIns.Exec(p.Content, p.Latitude, p.Longitude)
+	defer db.Close()
+
+	if err != nil {
+		log.Print("error connecting to database: ", err)
+		return false
+	}
+
+	return true
+}
+
+// messagesテーブル
+// id
+// message
+// latitude
+// longitude
+// created_at
