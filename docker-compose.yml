@@ -12,8 +12,10 @@ services:
     mysql:
         image: mysql:latest
         environment:
-            MYSQL_ROOT_PASSWORD: setzna
+            MYSQL_ROOT_PASSWORD: root
             MYSQL_USER: setzna 
             MYSQL_PASSWORD: setzna
             MYSQL_DATABASE: setzna
         container_name: setzna_mysql
+        volumes:
+            - ./mysql_data:/var/lib/mysql

@@ -1,9 +1,7 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"math"
 	"net/http"
@@ -11,11 +9,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	melody "gopkg.in/olahol/melody.v1"
 )
 
-type post struct {
+type Post struct {
+	gorm.Model
 	PostType  string `json:"type"`
 	Name      string `json:"name"`
 	Message   string `json:"message"`
@@ -83,7 +83,7 @@ func main() {
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		var p post
+		var p Post
 		json.Unmarshal(msg, &p)
 		if p.PostType == "location" {
 			// 緯度、経度をセットする
@@ -102,36 +102,46 @@ func main() {
 	r.Run(":" + port)
 }
 
-func saveDB(p post) bool {
-	const (
-		DRIVER_NAME = "mysql"
-		// user:password@tcp(container-name:port)/dbname ※mysql はデフォルトで用意されているDB
-		DATA_SOURCE_NAME = "setzna:setzna@tcp(setzna_mysql:3306)/mysql"
-	)
-
-	// DB の接続情報
-	var db *sql.DB
-	var err error
-
-	db, err = sql.Open(DRIVER_NAME, DATA_SOURCE_NAME)
+func saveDB(p Post) bool {
+	db, err := gorm.Open("mysql", "setzna:setzna@/setzna?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		log.Fatal("error connecting to database: ", err)
 	}
-
-	// データ保存処理
-	stmtIns, err := db.Prepare(fmt.Sprintf("INSERT INTO messages (message, latitude, longitude) VALUES (?, ?, ?)"))
-	if err != nil {
-		panic(err.Error())
-	}
-	_, err = stmtIns.Exec(p.Content, p.Latitude, p.Longitude)
 	defer db.Close()
 
-	if err != nil {
-		log.Print("error connecting to database: ", err)
-		return false
-	}
+	db.Create(&p)
 
 	return true
+
+	// const (
+	// 	DRIVER_NAME = "mysql"
+	// 	// user:password@tcp(container-name:port)/dbname ※mysql はデフォルトで用意されているDB
+	// 	DATA_SOURCE_NAME = "setzna:setzna@tcp(setzna_mysql:3306)/mysql"
+	// )
+
+	// // DB の接続情報
+	// var db *sql.DB
+	// var err error
+
+	// db, err = sql.Open(DRIVER_NAME, DATA_SOURCE_NAME)
+	// if err != nil {
+	// 	log.Fatal("error connecting to database: ", err)
+	// }
+
+	// // データ保存処理
+	// stmtIns, err := db.Prepare(fmt.Sprintf("INSERT INTO messages (message, latitude, longitude) VALUES (?, ?, ?)"))
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// _, err = stmtIns.Exec(p.Content, p.Latitude, p.Longitude)
+	// defer db.Close()
+
+	// if err != nil {
+	// 	log.Print("error connecting to database: ", err)
+	// 	return false
+	// }
+
+	// return true
 }
 
 // messagesテーブル
