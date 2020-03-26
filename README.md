@@ -2,7 +2,7 @@
 
 ## usage
 ```
-$ go run main.go
+$ docker-compose up -d
 ```
 localhost:8080で動きます。
 
@@ -19,6 +19,12 @@ https://setzna.herokuapp.com/
 ## ローカル開発環境
 
 ローカルで動かすときはWebsocketプロトコルをwssからwsに変更してください。
+
+## Migration
+```
+$ docker-compose exec app go run migration/migration.go
+```
+gormのマイグレーション機能を使用
 
 ## リクエストjson
 
