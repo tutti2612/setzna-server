@@ -1,18 +1,15 @@
-package main
+package db
 
 import (
-	"log"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func migration() {
+func Connection() *gorm.DB {
 	db, err := gorm.Open("mysql", "setzna:setzna@(mysql)/setzna?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
-		log.Fatal("error connecting to database: ", err)
+		panic("failed to connect database")
 	}
-	defer db.Close()
-
-	db.AutoMigrate(&Post{})
+	db.LogMode(true)
+	return db
 }

@@ -2,26 +2,18 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"math"
 	"net/http"
 	"os"
+	"setzna/model"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	melody "gopkg.in/olahol/melody.v1"
-)
 
-type Post struct {
-	gorm.Model
-	PostType  string `json:"type"`
-	Name      string `json:"name"`
-	Message   string `json:"message"`
-	Latitude  string `json:"latitude"`
-	Longitude string `json:"longitude"`
-}
+	"setzna/db"
+)
 
 // 2点間の距離を計算して半径50m以内だったらtrue
 func isNear(lat1, lng1, lat2, lng2 float64) bool {
@@ -83,7 +75,7 @@ func main() {
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		var p Post
+		var p model.Post
 		json.Unmarshal(msg, &p)
 		if p.PostType == "location" {
 			// 緯度、経度をセットする
@@ -102,11 +94,8 @@ func main() {
 	r.Run(":" + port)
 }
 
-func saveDB(p Post) bool {
-	db, err := gorm.Open("mysql", "setzna:setzna@/setzna?charset=utf8&parseTime=True&loc=Local")
-	if err != nil {
-		log.Fatal("error connecting to database: ", err)
-	}
+func saveDB(p model.Post) bool {
+	db := db.Connection()
 	defer db.Close()
 
 	db.Create(&p)
