@@ -10,6 +10,12 @@ localhost:8080で動きます。
 
 - Gin Web Framework https://github.com/gin-gonic/gin
 - melody https://github.com/olahol/melody
+- gorm https://gorm.io/ja_JP/
+
+## ディレクトリ構成
+
+ディレクトリ構成は↓を参考にしています。
+https://github.com/golang-standards/project-layout
 
 ## テスト環境(Heroku)
 
@@ -22,7 +28,7 @@ https://setzna.herokuapp.com/
 
 ## Migration
 ```
-$ docker-compose exec app go run migration/migration.go
+$ docker-compose exec app go run internal/migration/migration.go
 ```
 gormのマイグレーション機能を使用
 

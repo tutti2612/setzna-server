@@ -3,8 +3,8 @@ package main
 import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
-	"setzna/db"
-	"setzna/model"
+	"setzna/internal/db"
+	"setzna/internal/model"
 )
 
 func main() {
