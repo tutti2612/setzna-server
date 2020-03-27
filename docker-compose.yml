@@ -9,6 +9,11 @@ services:
         volumes:
             - .:/go/src/setzna
         command: go run cmd/setzna/main.go
+        environment: 
+            DB_USER: setzna
+            DB_PASS: setzna
+            DB_HOST: mysql
+            DB_NAME: setzna
     mysql:
         image: mysql:latest
         environment:
