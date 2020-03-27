@@ -2,17 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"math"
 	"net/http"
 	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	melody "gopkg.in/olahol/melody.v1"
 
-	"setzna/internal/db"
 	"setzna/internal/model"
+	"setzna/pkg/location"
 )
 
 func main() {
@@ -61,20 +59,10 @@ func main() {
 			})
 
 			// ここらへんでフロント側から受け取った名前、メッセージなどなどを保存する。
-			go saveDB(p)
+			go p.Save()
 		}
 	})
 	r.Run(":" + port)
-}
-
-// 2点間の距離を計算して半径50m以内だったらtrue
-func isNear(lat1, lng1, lat2, lng2 float64) bool {
-	const setznaDistance float64 = 0.05 // 0.05km = 50m
-	// 緯度1度あたり110.9463km、経度1度あたり90.4219km
-	// https://s-giken.info/distance/distance.php
-	// HACK: 地球の丸みを考慮すると、三平方の定理では不十分なので改善する。
-	distance := math.Sqrt(math.Pow((lat1-lat2)*110.9463, 2) + math.Pow((lng1-lng2)*90.4219, 2))
-	return distance < setznaDistance
 }
 
 func isSessionNear(s, q *melody.Session) bool {
@@ -91,12 +79,6 @@ func isSessionNear(s, q *melody.Session) bool {
 	lat2F64, _ := strconv.ParseFloat(lat2.(string), 64)
 	lng2F64, _ := strconv.ParseFloat(lng2.(string), 64)
 
-	return isNear(lat1F64, lng1F64, lat2F64, lng2F64)
-}
-
-func saveDB(p model.Post) {
-	db := db.Connection()
-	defer db.Close()
-
-	db.Create(&p)
+	const setznaDistance float64 = 0.05 // 0.05km = 50m
+	return location.Distance(lat1F64, lng1F64, lat2F64, lng2F64) < setznaDistance
 }
