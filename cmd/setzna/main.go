@@ -46,20 +46,20 @@ func main() {
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		var p model.Post
-		json.Unmarshal(msg, &p)
-		if p.PostType == "location" {
+		var message model.Message
+		json.Unmarshal(msg, &message)
+		if message.Type == "location" {
 			// 緯度、経度をセットする
-			s.Set("latitude", p.Latitude)
-			s.Set("longitude", p.Longitude)
+			s.Set("latitude", message.Latitude)
+			s.Set("longitude", message.Longitude)
 		}
-		if p.PostType == "message" {
+		if message.Type == "post" {
 			m.BroadcastFilter(msg, func(q *melody.Session) bool {
 				return isSessionNear(s, q)
 			})
 
 			// ここらへんでフロント側から受け取った名前、メッセージなどなどを保存する。
-			go p.Save()
+			go message.Save()
 		}
 	})
 	r.Run(":" + port)

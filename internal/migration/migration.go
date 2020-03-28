@@ -11,5 +11,5 @@ func main() {
 	db := db.Connection()
 	defer db.Close()
 
-	db.AutoMigrate(&model.Post{})
+	db.AutoMigrate(&model.Message{})
 }

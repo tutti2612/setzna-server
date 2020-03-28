@@ -8,11 +8,11 @@ const text = document.getElementById("text");
 
 ws.onmessage = function (msg) {
   let obj = JSON.parse(msg.data);
-  obj.message = escape_html(obj.message);
+  obj.conten = escape_html(obj.content);
   let line ="";
   if (obj.name==name){
     line =`<div class='line-right'>
-            <p class='line-right-text'>${obj.message} </p>
+            <p class='line-right-text'>${obj.content} </p>
             <div class="line-right-time">${now()}</div>
            </div>`
   }else{
@@ -24,7 +24,7 @@ ws.onmessage = function (msg) {
                     ${obj.name}
                     </p>
                     <p class='line-left-text'>
-                    ${obj.message}
+                    ${obj.content}
                     </p>
                     <div class='line-left-time'>
                         ${now()}
@@ -44,7 +44,7 @@ text.onkeydown = function (e) {
 function send_data(){
     if (text.value == "")return;
     text.value = escape_html(text.value);
-    let sendData = `{"name":"${name}","message":"${text.value}","latitude":"65.123123","longitude":"123.123123","type":"message"}`;
+    let sendData = `{"name":"${name}","content":"${text.value}","latitude":"65.123123","longitude":"123.123123","type":"post"}`;
     ws.send(sendData);
     text.value = "";
 }

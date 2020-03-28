@@ -7,18 +7,18 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type Post struct {
+type Message struct {
 	gorm.Model
-	PostType  string `json:"type"`
+	Type      string `json:"type"`
 	Name      string `json:"name"`
-	Message   string `json:"message"`
+	Content   string `json:"content"`
 	Latitude  string `json:"latitude"`
 	Longitude string `json:"longitude"`
 }
 
-func (p *Post) Save() {
+func (m *Message) Save() {
 	db := db.Connection()
 	defer db.Close()
 
-	db.Create(p)
+	db.Create(m)
 }
