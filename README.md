@@ -40,15 +40,15 @@ wss://setzna.herokuapp.com/room/ws
 ローカルに投げる場合はws  
 ws://localhost:8080/room/ws
 
-### メッセージリクエスト
+### ポストリクエスト
 
 ユーザーが投稿する度にサーバーに送信する想定
 
 ```
 {
-    "type": "message",
+    "type": "post",
     "name": "hoge",
-    "message": "fugafugafuga",
+    "content": "fugafugafuga",
     "latitude": 65.123123,
     "longitude": 123.123123
 }
@@ -62,7 +62,7 @@ ws://localhost:8080/room/ws
 {
     "type": "location",
     "name": "",
-    "message": "",
+    "content": "",
     "latitude": 65.123123,
     "longitude": 123.123123
 }
