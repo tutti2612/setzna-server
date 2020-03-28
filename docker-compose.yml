@@ -3,24 +3,26 @@ version: '3'
 services:
     app:
         build: .
+        container_name: setzna_app
         ports:
             - "8080:8080"
-        container_name: setzna_app
         volumes:
             - .:/go/src/setzna
-        command: go run cmd/setzna/main.go
-        environment: 
+        environment:
             DB_USER: setzna
             DB_PASS: setzna
             DB_HOST: mysql
             DB_NAME: setzna
+        command: go run cmd/setzna/main.go
     mysql:
         image: mysql:latest
+        container_name: setzna_mysql
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./mysql_data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_USER: setzna 
             MYSQL_PASSWORD: setzna
             MYSQL_DATABASE: setzna
-        container_name: setzna_mysql
-        volumes:
-            - ./mysql_data:/var/lib/mysql
