@@ -32,6 +32,12 @@ $ docker-compose exec app go run internal/migration/migration.go
 ```
 gormのマイグレーション機能を使用
 
+## Test
+
+```
+go test -v ./...
+```
+
 ## リクエストjson
 
 テスト環境(Heroku)に投げる場合はwss  
