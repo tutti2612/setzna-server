@@ -1,8 +1,6 @@
 package main
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-
 	"setzna/internal/db"
 	"setzna/internal/model"
 )
