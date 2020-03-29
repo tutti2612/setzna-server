@@ -6,6 +6,11 @@ services:
         container_name: setzna_app
         ports:
             - "8080:8080"
+            - "2345:2345"
+        security_opt:
+            - seccomp:unconfined
+        cap_add:
+            - SYS_PTRACE
         volumes:
             - .:/go/src/setzna
         environment:
@@ -13,7 +18,9 @@ services:
             DB_PASS: setzna
             DB_HOST: mysql
             DB_NAME: setzna
-        command: go run cmd/setzna/main.go
+        command: realize start --run
+#        command:  dlv debug --headless --listen=:2345 --api-version=2 cmd/setzna/main.go
+#        command: go run cmd/setzna/main.go
     mysql:
         image: mysql:latest
         container_name: setzna_mysql
