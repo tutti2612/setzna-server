@@ -1,13 +1,13 @@
 # Setzna
 
 ## usage
-```
-$ ./run.sh
+```bash
+$ make run
 ```
 localhost:8080で動きます。
 
-```
-$ ./debug.sh
+```bash
+$ make debug
 ```
 リモートデバッグしたいときはこちら  
 IntelliJ IDEA, Golandで動作確認済み
@@ -43,15 +43,19 @@ https://setzna.herokuapp.com/
 ローカルで動かすときはWebsocketプロトコルをwssからwsに変更してください。
 
 ## Migration
-```
+```bash
 $ docker-compose exec app go run cmd/migration/migration.go
+# or
+$ make migration
 ```
 gormのマイグレーション機能を使用
 
 ## Test
 
-```
+```bash
 $ docker-compose exec app go test -v ./...
+# or
+$ make test
 ```
 
 ## リクエストjson
