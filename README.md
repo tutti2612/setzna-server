@@ -2,19 +2,35 @@
 
 ## usage
 ```
-$ docker-compose up -d
+$ ./run.sh
 ```
 localhost:8080で動きます。
 
+```
+$ ./debug.sh
+```
+リモートデバッグしたいときはこちら  
+IntelliJ IDEA, Golandで動作確認済み
+
 ## library
 
-- Gin Web Framework https://github.com/gin-gonic/gin
-- melody https://github.com/olahol/melody
-- gorm https://gorm.io/ja_JP/
+- [Gin Web Framework](https://github.com/gin-gonic/gin)
+    - 軽量Webフレームワーク
+    - pythonのflaskみたいなもの
+- [melody](https://github.com/olahol/melody)
+    - Websocketフレームワーク
+    - メッセージのフィルタリングが簡単にできるので採用
+- [gorm](https://github.com/jinzhu/gorm)
+    - ORM
+    - [日本語ドキュメント](https://gorm.io/ja_JP/)あります
+- [realize](https://github.com/oxequa/realize)
+    - ホットリロードできるようになるやつ
+- [delve](https://github.com/go-delve/delve)
+    - リモートデバッグに必要
 
 ## ディレクトリ構成
 
-ディレクトリ構成は↓を参考にしています。
+ディレクトリ構成は↓を参考にしています。  
 https://github.com/golang-standards/project-layout
 
 ## テスト環境(Heroku)
@@ -28,14 +44,14 @@ https://setzna.herokuapp.com/
 
 ## Migration
 ```
-$ docker-compose exec app go run internal/migration/migration.go
+$ docker-compose exec app go run cmd/migration/migration.go
 ```
 gormのマイグレーション機能を使用
 
 ## Test
 
 ```
-go test -v ./...
+$ docker-compose exec app go test -v ./...
 ```
 
 ## リクエストjson
