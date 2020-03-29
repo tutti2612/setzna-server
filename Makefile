@@ -15,3 +15,7 @@ migration:
 .PHONY: test
 test:
 	docker-compose exec app go test -v ./...
+
+.PHONY: db
+db:
+	docker-compose exec mysql mysql -uroot -proot setzna
