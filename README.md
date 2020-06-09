@@ -1,15 +1,37 @@
 # Setzna
 
 ## usage
-```
-$ go run main.go
+```bash
+$ make run
 ```
 localhost:8080で動きます。
 
+```bash
+$ make debug
+```
+リモートデバッグしたいときはこちら  
+IntelliJ IDEA, Golandで動作確認済み
+
 ## library
 
-- Gin Web Framework https://github.com/gin-gonic/gin
-- melody https://github.com/olahol/melody
+- [Gin Web Framework](https://github.com/gin-gonic/gin)
+    - 軽量Webフレームワーク
+    - pythonのflaskみたいなもの
+- [melody](https://github.com/olahol/melody)
+    - Websocketフレームワーク
+    - メッセージのフィルタリングが簡単にできるので採用
+- [gorm](https://github.com/jinzhu/gorm)
+    - ORM
+    - [日本語ドキュメント](https://gorm.io/ja_JP/)あります
+- [realize](https://github.com/oxequa/realize)
+    - ホットリロードできるようになるやつ
+- [delve](https://github.com/go-delve/delve)
+    - リモートデバッグに必要
+
+## ディレクトリ構成
+
+ディレクトリ構成は↓を参考にしています。  
+https://github.com/golang-standards/project-layout
 
 ## テスト環境(Heroku)
 
@@ -20,6 +42,22 @@ https://setzna.herokuapp.com/
 
 ローカルで動かすときはWebsocketプロトコルをwssからwsに変更してください。
 
+## Migration
+```bash
+$ docker-compose exec app go run cmd/migration/migration.go
+# or
+$ make migration
+```
+gormのマイグレーション機能を使用
+
+## Test
+
+```bash
+$ docker-compose exec app go test -v ./...
+# or
+$ make test
+```
+
 ## リクエストjson
 
 テスト環境(Heroku)に投げる場合はwss  
@@ -28,15 +66,15 @@ wss://setzna.herokuapp.com/room/ws
 ローカルに投げる場合はws  
 ws://localhost:8080/room/ws
 
-### メッセージリクエスト
+### ポストリクエスト
 
 ユーザーが投稿する度にサーバーに送信する想定
 
 ```
 {
-    "type": "message",
+    "type": "post",
     "name": "hoge",
-    "message": "fugafugafuga",
+    "content": "fugafugafuga",
     "latitude": 65.123123,
     "longitude": 123.123123
 }
@@ -50,7 +88,7 @@ ws://localhost:8080/room/ws
 {
     "type": "location",
     "name": "",
-    "message": "",
+    "content": "",
     "latitude": 65.123123,
     "longitude": 123.123123
 }

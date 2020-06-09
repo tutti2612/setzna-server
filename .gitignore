@@ -1,1 +1,6 @@
 .idea/
+.vscode/
+mysql_data
+__debug_bin
+setzna_bin
+.realize.yaml

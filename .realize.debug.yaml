@@ -1,0 +1,30 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: setzna
+  path: .
+  commands:
+    install:
+      status: true
+      method: go build -o setzna_bin ./cmd/setzna/main.go
+    run:
+      status: true
+      method: /go/bin/dlv
+  args:
+    - exec
+    - ./setzna_bin
+    - --headless=true
+    - --listen=:2345
+    - --api-version=2
+    - --accept-multiclient
+  watcher:
+    extensions:
+    - go
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor
