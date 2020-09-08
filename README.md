@@ -35,7 +35,7 @@ https://github.com/golang-standards/project-layout
 
 ## テスト環境(Heroku)
 
-Herokuにデプロイしています。自由に使ってください。  
+Herokuにデプロイしています。
 https://setzna.herokuapp.com/
 
 ## ローカル開発環境
